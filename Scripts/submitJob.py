@@ -75,13 +75,14 @@ OUTPUTFILE=`printf "hist_april07_baseline_%%04d.root" ${JOBID}`
 
 source setup.sh
 ifdh cp $INPUTFILE ./beammc_tmp.root
-./rwgh -f %(fhiclfile)s -i beammc_tmp.root -o ${OUTPUTFILE}s
+./rwgh -f %(fhiclfile)s -i beammc_tmp.root -o ${OUTPUTFILE}
 rm rwgh
 rm setup.sh
 rm libBNBSysBase.so  
 rm libBNBSysCalc.so
 rm `basename ${INPUT_TAR_FILE}`
 rm beammc_tmp.root
+rm beamData -rf
 cd ..
 ifdh mkdir %(outputdir)s
 ifdh cp -r ${JOBID} %(outputdir)s/${JOBID}
