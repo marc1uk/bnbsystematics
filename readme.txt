@@ -11,7 +11,7 @@ The code is maintained in a git "repository":https://cdcvs.fnal.gov/redmine/proj
 Authenticated clone (i.e., allows to modify the software and upload your modification on this site, via git push):
 
 <pre>
-$ git clone ssh://p-booster-neutrino-beamline@cdcvs.fnal.gov/cvs/projects/systematics
+$ git clone ssh://p-systematics@cdcvs.fnal.gov/cvs/projects/systematics
 </pre>
 
 Anonymous clone (no push):
@@ -24,22 +24,22 @@ h1. Setup
 To setup the code cd into top directory. Note that you should run source from top directory to get the LD_LIBRARY_PATH and FW_SEARCH_PATH env variables correctly set.
 Source the setup script:
 <pre>
-source Setup/setup.sh
+$ source Setup/setup.sh
 </pre>
 
 h1. Build
 
 From top directory cd into build and run:
 <pre>
-cmake ..
-make install -j3
+$ cmake ..
+$ make install -j3
 </pre>
 
 h1. Run
 
 To run the code cd into top directory and run the rwgh.
 <pre>
-bin/rwgh -h
+$ bin/rwgh -h
 Options:
   -h [ --help ]                    Print help message
   -i [ --input ] arg               Path pattern for input files. Put it in 
@@ -50,14 +50,14 @@ Options:
 
 For example to generate histograms using one beam ntuple: 
 <pre>
-bin/rwgh -f fcl/eventweight_microboone.fcl -i april07_baseline_0001.root -o output_0001.root
+$ bin/rwgh -f fcl/eventweight_microboone.fcl -i april07_baseline_0001.root -o output_0001.root
 </pre>
 
 h1. Running on grid
 
 You can use the provided submitJob.py script.
 <pre>
-Scripts/submitJob.py -h
+$ Scripts/submitJob.py -h
 usage: submitJob.py [-h] [-d] -f FHICLFILE -g GROUP -i INPUTPATH [-j JOBID] -n
                     [1-10000] -o OUTPUTPATH
 
@@ -84,12 +84,12 @@ optional arguments:
 
 Example how to submit 10 jobs:
 <pre>
-Scripts/submitJob.py -i /pnfs/uboone/persistent/uboonebeam/bnb_mc/ -o /pnfs/uboone/scratch/users/zarko/test_bnb_sys -f fcl/eventweight_microboone.fcl -n 10 -g uboone
+$ Scripts/submitJob.py -i /pnfs/uboone/persistent/uboonebeam/bnb_mc/ -o /pnfs/uboone/scratch/users/zarko/test_bnb_sys -f fcl/eventweight_microboone.fcl -n 10 -g uboone
 </pre>
 
 Once the jobs are done running add all output histograms into one root file:
 <pre>
-hadd merged_hist.root /pnfs/uboone/scratch/users/zarko/bnb_sys/*/*.root 
+$ hadd merged_hist.root /pnfs/uboone/scratch/users/zarko/bnb_sys/*/*.root 
 </pre>
 
 h1. Analyze
