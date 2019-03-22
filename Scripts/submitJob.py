@@ -35,7 +35,7 @@ parser.add_argument("-o", "--output-path", dest="outputpath",
 args = parser.parse_args()
 
 #check for lib and bin
-flist=[ "bin/rwgh", "lib/libBNBSysBase.so", "lib/libBNBSysCalc.so", args.fhiclfile ]
+flist=[ "bin/rwgh", "lib/libBNBSysBase.so", "lib/libBNBSysCalc.so", "Setup/setup.sh",args.fhiclfile ]
 for ff in  flist:
     if (not os.path.isfile(ff)):
         print "%s does not exist."%ff
@@ -64,6 +64,8 @@ echo "Process: " ${PROCESS}
 
 export JOBID=$((PROCESS+%(jobidoffset)s))
 cd ${_CONDOR_SCRATCH_DIR}
+mkdir ${CLUSTER}
+cd ${CLUSTER}
 mkdir ${JOBID}
 cd ${JOBID}
 cp $INPUT_TAR_FILE .
