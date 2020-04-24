@@ -242,18 +242,28 @@ int main(int ac, char* av[])
     double enu_xy,wgt_xy;
      
     //neutrino at MiniBooNE (energy info used by histogram reweighting calculators
-    TVector3 xyzMiniBooNE(0.,   189.614,   54134.);
+    TVector3 xyzMiniBooNE(0.,   189.614,   54134.);  // << miniboone is 540m downstream of the target
     bsim::calcEnuWgt(dk2nu,xyzMiniBooNE,enu_xy,wgt_xy);
     TVector3 p3_mb = enu_xy * (xyzMiniBooNE - xyzDk).Unit();
     bsim::NuRay anuray_mb(p3_mb.x(), p3_mb.y(), p3_mb.z(), enu_xy, wgt_xy);
     dk2nu->nuray.push_back(anuray_mb);
     
-    //neutrino energy at MicroBooNE:
-    TVector3 xyzMicroBooNE(0., 0., 46336.3525);
-    bsim::calcEnuWgt(dk2nu,xyzMicroBooNE,enu_xy,wgt_xy);
-    TVector3 p3_ub = enu_xy * (xyzMicroBooNE - xyzDk).Unit();
-    bsim::NuRay anuray_ub(p3_ub.x(), p3_ub.y(), p3_ub.z(), enu_xy, wgt_xy);
-    dk2nu->nuray.push_back(anuray_ub);
+//    //neutrino energy at MicroBooNE:
+//    TVector3 xyzMicroBooNE(0., 0., 46336.3525);
+//    bsim::calcEnuWgt(dk2nu,xyzMicroBooNE,enu_xy,wgt_xy);
+//    TVector3 p3_ub = enu_xy * (xyzMicroBooNE - xyzDk).Unit();
+//    bsim::NuRay anuray_ub(p3_ub.x(), p3_ub.y(), p3_ub.z(), enu_xy, wgt_xy);
+//    dk2nu->nuray.push_back(anuray_ub);
+    
+    //neutrino energy at ANNIE:
+    TVector3 xyzANNIE(0., 0., 10000.0);
+    // "Based on accurate survey data, the distance between the center of the beryllium target
+    // and the center of the SciBar detector is taken to be 99.9 m, with the SciBooNE detector
+    // located on beam axis within a tolerance of a few centimeters." (DOI: 10.1103/PhysRevD.78.112004)
+    bsim::calcEnuWgt(dk2nu,xyzANNIE,enu_xy,wgt_xy);
+    TVector3 p3_an = enu_xy * (xyzANNIE - xyzDk).Unit();
+    bsim::NuRay anuray_an(p3_an.x(), p3_an.y(), p3_an.z(), enu_xy, wgt_xy);
+    dk2nu->nuray.push_back(anuray_an);
 
     std::vector<double> totwgh(1000,1.);
     evwgh::MCEventWeight wght=wm.Run(*dk2nu,0);

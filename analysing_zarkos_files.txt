@@ -1,0 +1,47 @@
+cd /annie/app/users/moflaher/Bnb_Systematics/systematics
+. Setup/setup.sh  # note this does not alias `root` to `root -l`
+bin/rwgh -f fcl/eventweight_microboone.fcl -i /annie/data/flux/redecay_bnb/beammc_annie_2055.root -o sampleout.root
+# above proceeded with no errors
+root sampleout.root
+# opens without errors, but does take a while. This is the file with 56,000 histograms in, so
+*** don't _file0->ls() ***
+*** don't open it in a TBrowser ***
+numubar_pioninexsec_FluxUnisim_999->Draw("h"); # will show a histogram. 
+numu->Draw("h");  # shows maybe the predicted average numu flux? Needs normalizing though.
+
+# run the analysis script to produce error matrix:
+root -l Scripts/analyze.c\(\"sampleout.root\",\"numu\"\)
+# also ran without errors! produces two plots: a histogram of average flux, and a histogram with a breakdown of errors (same ones as in zarko zoom screenshot)
+
+BUT FIRST
+before running this on all annie redecay files, we need to get the configuration (fcl) file set up correctly.
+
+from readme/wiki:
+"Note that bnbcorrection is a reweighting that should be applied when running over raw BooNEG4Beam files. It is not necessary to include it when running over redecayed ntuples or newer gsimple files (most gsimple files 2018 and later were made using MiniBooNENtupletoGSimpleConversion code that does not require this correction). GSimple files made using standard gsimple scripts do need this correction. This mostly corrects for the muon polarization and affects nue flux."
+to remove this correction just remove it from the list of weight_functions (it's the first one).
+
+Note on unisims (from wiki):
+"Several systematics reweight using flux histograms (horn current, skin depth, nucleon xsec).
+For these systematics neutrino spectrum was calculated at particular location for input histograms and this location should be matched in the dk2nu nuray passed to the WeightCalc.
+Right now it is hard-coded to use 1st location (0th is usually used for random direction)."
+The dk2nu object is passed to the WeightCalc via the call to rwgh.cxx::259
+(evwgh::MCEventWeight wght=wm.Run(*dk2nu,0); which calls WeightManager::Run, which calls FluxUnisimWeightCalc::GetWeight)
+This retrieves the neutrino type, parent, and ENERGY (FluxUnisimWeightCalc.cxx::201), the last of which says:
+> // Collect neutrino energy. This should match the location of the input unisim histograms
+> double enu=e.nuray[1].E;
+This is the only place where `e.nuray` is used. i.e. it seems as though for this to work correctly the ENERGY (not position) of nuray[1] needs to be "correct" - i.e. neutrion energy spectrum needs to have been sampled at the correct location?)
+There are 3 nurays pushed into the dk2nu (rwgh.cxx:238-256). the second is generated at miniboone and says:
+> //neutrino at MiniBooNE (energy info used by histogram reweighting calculators)
+so it seems like this is already accounted for ... but then how do we get the right neutrino flux spectrum?
+The third nuray pushed in is at microboone - so... do we replace this? Is this the one that gets plotted?
+It seems as though the following Fill() calls in rwgh use `enu_xy`,  which it looks like gets overwritten with each nuray generation. So presumably the last one (currently uBoone) gets used as the central value.
+What about errors? Do all the non-unisim weightcalcs use nuray[2] rather than nuray[1]? Or not use the nuray at all?
+
+===============
+CHANGE SUMMARY
+===============
+* remove bnbcorrection from the list of systematics, since we use new modern files
+* replace microboone location for calculation of central value (and.. maybe others?) flux spectrum and replace it with ANNIE location. ANNIE is assumed to be 100m downstream of BNB target and exactly on-axis (sciboone paper says 99.9m from target to center of SciBar and within a few cm on-axis). 
+
+
+

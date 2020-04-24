@@ -6,7 +6,10 @@ The code was initially ported from MiniBooNE framework by MicroBooNE into LArSof
 
 h1. Downloading the code
 
-The code is maintained in a git "repository":https://cdcvs.fnal.gov/redmine/projects/booster-neutrino-beamline/repository/systematics associated with this redmine project.  You may clone this repository anonymously and without authentication but in order to push commits back you must be authenticated.  
+The code is maintained in a git "repository":
+old: https://cdcvs.fnal.gov/redmine/projects/booster-neutrino-beamline/repository/systematics
+new: https://cdcvs.fnal.gov/redmine/projects/systematics/repository
+associated with this redmine project.  You may clone this repository anonymously and without authentication but in order to push commits back you must be authenticated.  
 
 Authenticated clone (i.e., allows to modify the software and upload your modification on this site, via git push):
 
